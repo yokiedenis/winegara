@@ -5,7 +5,7 @@ const initialState = {
   isAuthenticated: false,
   isLoading: true,
   user: null,
-  token:null,
+  token:null
 };
 
 export const registerUser = createAsyncThunk(
@@ -103,8 +103,8 @@ const authSlice = createSlice({
     setUser: (state, action) => { },
     resetTokenAndCredentials:(state)=>{
       state.isAuthenticated=false;
-      state.user=null;
-      state.token=null;
+      state.user=null
+      state.token=null
     }
   },
   extraReducers: (builder) => {
@@ -137,7 +137,7 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.user = null;
         state.isAuthenticated = false;
-        
+        state.token=null;
       })
       .addCase(checkAuth.pending, (state) => {
         state.isLoading = true;
@@ -146,7 +146,7 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.user = action.payload.success ? action.payload.user : null;
         state.isAuthenticated = action.payload.success;
-        state.token=null;
+        
       })
       .addCase(checkAuth.rejected, (state, action) => {
         state.isLoading = false;

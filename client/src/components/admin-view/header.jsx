@@ -11,7 +11,7 @@ function AdminHeader({ setOpen }) {
   function handleLogout() {
     //for secure
     dispatch(logoutUser());
-    dispatch(resetTokenAndCredentials)
+    dispatch(resetTokenAndCredentials())
     sessionStorage.clear();
     navigate("/auth/login");
   }
