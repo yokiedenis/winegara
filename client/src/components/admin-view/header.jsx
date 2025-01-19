@@ -2,7 +2,7 @@ import { AlignJustify, LogOut } from "lucide-react";
 import { Button } from "../ui/button";
 import { useDispatch } from "react-redux";
 import { logoutUser, resetTokenAndCredentials } from "@/store/auth-slice";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function AdminHeader({ setOpen }) {
   const dispatch = useDispatch();
@@ -13,7 +13,7 @@ function AdminHeader({ setOpen }) {
     // dispatch(logoutUser());
     dispatch(resetTokenAndCredentials)
     sessionStorage.clear();
-    Navigate("/auth/login");
+    navigate("/auth/login");
   }
 
   return (
