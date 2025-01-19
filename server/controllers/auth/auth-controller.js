@@ -117,11 +117,11 @@ const loginUser = async (req, res) => {
 //logout
 
 const logoutUser = (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      return res.status(500).json("logout unsucessful");
-    } 
-  });
+  // req.session.destroy((err) => {
+  //   if (err) {
+  //     return res.status(500).json("logout unsucessful");
+  //   } 
+  // });
   // res.clearCookie("token").json({
   //   success: true,
   //   message: "Logged out successfully!",
@@ -158,9 +158,9 @@ const logoutUser = (req, res) => {
 
 const authMiddleware = async (req, res, next) => {
   // Check if session is authenticated
-  if (!req.session.isAuth) {
-    return res.status(401).json("Session expired, please login again");
-  }
+  // if (!req.session.isAuth) {
+  //   return res.status(401).json("Session expired, please login again");
+  // }
   const authHeader = req.headers["authorization"];
   const token =authHeader && authHeader.split(" ")[1];
   if (!token)
