@@ -73,12 +73,12 @@ const loginUser = async (req, res) => {
     );
    //creating a session base auth in database
     //session based auth
-    req.session.isAuth=true;
-    req.session.user={
-        userId:checkUser.id,
-        email:checkUser.email,
-        username:checkUser.userName,
-    };
+    // req.session.isAuth=true;
+    // req.session.user={
+    //     userId:checkUser.id,
+    //     email:checkUser.email,
+    //     username:checkUser.userName,
+    // };
     //change secure to true when sending secure https
     //do this on secure
     // res.cookie("token", token, { httpOnly: true, secure: false }).json({
@@ -116,12 +116,12 @@ const loginUser = async (req, res) => {
 
 //logout
 
-const logoutUser = (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      return res.status(500).json("logout unsucessful");
-    } 
-  });
+// const logoutUser = (req, res) => {
+//   req.session.destroy((err) => {
+//     if (err) {
+//       return res.status(500).json("logout unsucessful");
+//     } 
+//   });
   // res.clearCookie("token").json({
   //   success: true,
   //   message: "Logged out successfully!",

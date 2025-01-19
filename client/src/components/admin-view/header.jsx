@@ -10,7 +10,7 @@ function AdminHeader({ setOpen }) {
   
   function handleLogout() {
     //for secure
-    dispatch(logoutUser());
+    // dispatch(logoutUser());
     dispatch(resetTokenAndCredentials())
     sessionStorage.clear();
     navigate("/auth/login");
