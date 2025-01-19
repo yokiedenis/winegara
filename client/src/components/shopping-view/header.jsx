@@ -78,7 +78,7 @@ function HeaderRightContent() {
     dispatch(logoutUser());
     dispatch(resetTokenAndCredentials);
     sessionStorage.clear();
-    Navigate("/auth/login");
+    navigate("/auth/login");
   }
 
   useEffect(() => {
