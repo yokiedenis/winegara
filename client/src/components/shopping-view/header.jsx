@@ -1,6 +1,7 @@
 import { HousePlug, LogOut, Menu, ShoppingCart, UserCog } from "lucide-react";
 import {
   Link,
+  Navigate,
   useLocation,
   useNavigate,
   useSearchParams,
@@ -74,10 +75,10 @@ function HeaderRightContent() {
 
   function handleLogout() {
     //for secure
-    // dispatch(logoutUser());
-    dispatch(resetTokenAndCredentials)
+    dispatch(logoutUser());
+    dispatch(resetTokenAndCredentials);
     sessionStorage.clear();
-    navigate("/auth/login");
+    Navigate("/auth/login");
   }
 
   useEffect(() => {

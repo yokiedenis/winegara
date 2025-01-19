@@ -12,6 +12,7 @@ import { Label } from "../ui/label";
 import StarRatingComponent from "../common/star-rating";
 import { useEffect, useState } from "react";
 import { addReview, getReviews } from "@/store/shop/review-slice";
+import { DialogTitle } from "@radix-ui/react-dialog";
 
 function ProductDetailsDialog({ open, setOpen, productDetails }) {
   const [reviewMsg, setReviewMsg] = useState("");
@@ -113,6 +114,9 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
   return (
     <Dialog open={open} onOpenChange={handleDialogClose}>
       <DialogContent className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:p-12 max-w-[90vw] sm:max-w-[80vw] lg:max-w-[70vw] max-h-[90vh] overflow-y-auto">
+      <DialogTitle>
+          <VisuallyHidden>product details</VisuallyHidden>
+        </DialogTitle>
         <div className="relative overflow-hidden rounded-lg">
           <img
             src={productDetails?.image}

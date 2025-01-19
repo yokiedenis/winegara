@@ -3,6 +3,7 @@ import { Badge } from "../ui/badge";
 import { DialogContent } from "../ui/dialog";
 import { Label } from "../ui/label";
 import { Separator } from "../ui/separator";
+import { DialogTitle } from "@radix-ui/react-dialog";
 
 function ShoppingOrderDetailsView({ orderDetails }) {
   const { user } = useSelector((state) => state.auth);
@@ -15,6 +16,9 @@ function ShoppingOrderDetailsView({ orderDetails }) {
   };
   return (
     <DialogContent className="sm:max-w-[600px]">
+      <DialogTitle>
+          <VisuallyHidden>order details</VisuallyHidden>
+        </DialogTitle>
       <div className="grid gap-6">
         <div className="grid gap-2">
           <div className="flex mt-6 items-center justify-between">
