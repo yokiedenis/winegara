@@ -79,17 +79,31 @@ const loginUser = async (req, res) => {
         email:checkUser.email,
         username:checkUser.userName,
     };
-    
-    res.cookie("token", token, { httpOnly: true, secure: false }).json({
-      success: true,
-      message: "Logged in successfully",
+    //change secure to true when sending secure https
+    //do this on secure
+    // res.cookie("token", token, { httpOnly: true, secure: false }).json({
+    //   success: true,
+    //   message: "Logged in successfully",
+    //   user: {
+    //     email: checkUser.email,
+    //     role: checkUser.role,
+    //     id: checkUser._id,
+    //     userName: checkUser.userName,
+    //   },
+    // });
+
+    //do this in render dev
+    res.status(200).json({
+      success:true,
+      message:"Logged in successfully",
+      token,
       user: {
-        email: checkUser.email,
-        role: checkUser.role,
-        id: checkUser._id,
-        userName: checkUser.userName,
-      },
-    });
+            email: checkUser.email,
+            role: checkUser.role,
+            id: checkUser._id,
+            userName: checkUser.userName,
+          },
+    })
  
   } catch (e) {
     console.log(e);
@@ -116,12 +130,39 @@ const logoutUser = (req, res) => {
 };
 
 //auth middleware
+//for secure
+// const authMiddleware = async (req, res, next) => {
+//   // Check if session is authenticated
+//   if (!req.session.isAuth) {
+//     return res.status(401).json("Session expired, please login again");
+//   }
+//   const token = req.cookies.token;
+//   if (!token)
+//     return res.status(401).json({
+//       success: false,
+//       message: "Unauthorised user!",
+//     });
+
+//   try {
+//     const decoded = jwt.verify(token, process.env.SECRET_KEY);
+//     req.user = decoded;
+//     next();
+//   } catch (error) {
+//     res.status(401).json({
+//       success: false,
+//       message: "Unauthorised user!",
+//     });
+//   }
+  
+// };
+
 const authMiddleware = async (req, res, next) => {
   // Check if session is authenticated
   if (!req.session.isAuth) {
     return res.status(401).json("Session expired, please login again");
   }
-  const token = req.cookies.token;
+  const authHeader = req.headers["authorization"];
+  const token =authHeader && authHeader.split(" ")[1];
   if (!token)
     return res.status(401).json({
       success: false,
@@ -140,5 +181,6 @@ const authMiddleware = async (req, res, next) => {
   }
   
 };
+
 
 module.exports = { registerUser, loginUser, logoutUser, authMiddleware };
