@@ -12,6 +12,7 @@ import {
 } from "@/store/admin/order-slice";
 import { useToast } from "../ui/use-toast";
 import { DialogTitle } from "@radix-ui/react-dialog";
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 
 const initialFormData = {
   status: "",

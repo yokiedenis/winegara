@@ -13,6 +13,7 @@ import StarRatingComponent from "../common/star-rating";
 import { useEffect, useState } from "react";
 import { addReview, getReviews } from "@/store/shop/review-slice";
 import { DialogTitle } from "@radix-ui/react-dialog";
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 
 function ProductDetailsDialog({ open, setOpen, productDetails }) {
   const [reviewMsg, setReviewMsg] = useState("");

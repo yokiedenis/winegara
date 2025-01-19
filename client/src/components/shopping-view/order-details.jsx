@@ -4,6 +4,7 @@ import { DialogContent } from "../ui/dialog";
 import { Label } from "../ui/label";
 import { Separator } from "../ui/separator";
 import { DialogTitle } from "@radix-ui/react-dialog";
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 
 function ShoppingOrderDetailsView({ orderDetails }) {
   const { user } = useSelector((state) => state.auth);
