@@ -127,7 +127,7 @@ const loginUser = async (req, res) => {
   //   message: "Logged out successfully!",
   // });
   
-};
+// };
 
 //auth middleware
 //for secure
