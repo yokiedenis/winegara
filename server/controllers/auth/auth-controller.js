@@ -116,18 +116,18 @@ const loginUser = async (req, res) => {
 
 //logout
 
-// const logoutUser = (req, res) => {
-//   req.session.destroy((err) => {
-//     if (err) {
-//       return res.status(500).json("logout unsucessful");
-//     } 
-//   });
+const logoutUser = (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).json("logout unsucessful");
+    } 
+  });
   // res.clearCookie("token").json({
   //   success: true,
   //   message: "Logged out successfully!",
   // });
   
-// };
+};
 
 //auth middleware
 //for secure
