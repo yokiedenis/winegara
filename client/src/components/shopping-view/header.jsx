@@ -70,12 +70,13 @@ function MenuItems( {closeSheet} ) {
   );
 }
 
-function HeaderRightContent() {
+function HeaderRightContent({ closeSheet }) {
   const { user } = useSelector((state) => state.auth);
   const { cartItems } = useSelector((state) => state.shopCart);
   const [openCartSheet, setOpenCartSheet] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
 
   function handleLogout() {
     //for secure
@@ -84,6 +85,7 @@ function HeaderRightContent() {
     sessionStorage.clear();
     navigate("/auth/login");
   }
+  
 
   useEffect(() => {
     dispatch(fetchCartItems(user?.id));
@@ -127,7 +129,7 @@ function HeaderRightContent() {
         <DropdownMenuContent side="right" className="w-56">
           <DropdownMenuLabel>Logged in as {user?.userName}</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => navigate("/shop/account")}>
+          <DropdownMenuItem onClick={() => {navigate("/shop/account"); closeSheet()}}>
             <UserCog className="mr-2 h-4 w-4" />
             Account
           </DropdownMenuItem>
@@ -146,6 +148,7 @@ function ShoppingHeader() {
   const { isAuthenticated } = useSelector((state) => state.auth);
   const [openSheet, setOpenSheet] = useState(false); 
   const closeSheet = () => setOpenSheet(false);
+  
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background">
@@ -163,7 +166,7 @@ function ShoppingHeader() {
           </SheetTrigger>
           <SheetContent side="left" className="w-full max-w-xs">
           <MenuItems closeSheet={closeSheet} />
-            <HeaderRightContent />
+          <HeaderRightContent closeSheet={closeSheet} />
           </SheetContent>
         </Sheet>
         <div className="hidden lg:block">
@@ -171,7 +174,7 @@ function ShoppingHeader() {
         </div>
 
         <div className="hidden lg:block">
-          <HeaderRightContent />
+        <HeaderRightContent closeSheet={closeSheet} />
         </div>
       </div>
     </header>
