@@ -115,6 +115,7 @@ function HeaderRightContent({ closeSheet }) {
               ? cartItems.items
               : []
           }
+          closeSheet={closeSheet}
         />
       </Sheet>
 
