@@ -42,7 +42,8 @@ const reviewSlice = createSlice({
       .addCase(getReviews.rejected, (state) => {
         state.isLoading = false;
         state.reviews = [];
-      });
+      })
+      
   },
 });
 

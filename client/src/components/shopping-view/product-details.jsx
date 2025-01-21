@@ -89,6 +89,21 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
         reviewValue: rating,
       })
     ).then((data) => {
+      // console.log(data.error.message.includes("400"))
+      if (data.error.message.includes("400")) { 
+        toast({
+          title: "You already reviewed this product!",
+          variant: "destructive",
+        });
+        return; 
+      }
+      if (data.error.message.includes("403")) { 
+        toast({
+          title: "You need to purchase product to review it.",
+          variant: "destructive",
+        });
+        return; 
+      }
       if (data.payload.success) {
         setRating(0);
         setReviewMsg("");

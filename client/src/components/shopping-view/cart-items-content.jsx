@@ -78,7 +78,7 @@ function UserCartItemsContent({ cartItem }) {
     }).format(amount);
   };
   return (
-    <div className="flex items-center space-x-4">
+    <div className="flex flex-wrap items-center space-x-4">
       <img
         src={cartItem?.image}
         alt={cartItem?.title}
