@@ -141,7 +141,7 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
         </div>
         <div className="">
           <div>
-            <h1 className="text-3xl font-extrabold">{productDetails?.title}</h1>
+            <h1 className="text-2xl font-bold">{productDetails?.title}</h1>
             <p className="text-muted-foreground text-base mb-5 mt-4">
               {productDetails?.description}
             </p>

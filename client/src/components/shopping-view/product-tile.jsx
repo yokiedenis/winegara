@@ -17,7 +17,7 @@ function ShoppingProductTile({
 };
 
 const truncatedDescription = product?.description?.length > 100 
-? product.description.slice(0, 40) + "..." 
+? product.description.slice(0, 80) + "..." 
 : product?.description;
 
   return (
@@ -48,7 +48,7 @@ const truncatedDescription = product?.description?.length > 100
           <h2 className="text-xl font-bold mb-2">{product?.title}</h2>
          
           </div>
-          <p className="text-sm text-muted-foreground min-h-[40px]">
+          <p className="text-sm text-muted-foreground min-h-[60px]">
             {truncatedDescription}
           </p>
           {/* <div className="flex justify-between items-center mb-2">
