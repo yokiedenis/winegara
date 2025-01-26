@@ -17,9 +17,6 @@ function ShoppingOrderDetailsView({ orderDetails }) {
   };
   return (
     <DialogContent className="sm:max-w-[600px]">
-      <DialogTitle>
-          <VisuallyHidden>order details</VisuallyHidden>
-        </DialogTitle>
       <div className="grid gap-6">
         <div className="grid gap-2">
           <div className="flex mt-6 items-center justify-between">

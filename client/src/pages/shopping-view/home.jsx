@@ -117,14 +117,14 @@ function ShoppingHome() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <div className="relative w-full h-[600px] overflow-hidden">
+      <div className="relative w-full h-[50vh] sm:h-[300px] md:h-[400px] lg:h-[500px] ">
         {featureImageList && featureImageList.length > 0
           ? featureImageList.map((slide, index) => (
             <img
               src={slide?.image}
               key={index}
               className={`${index === currentSlide ? "opacity-100" : "opacity-0"
-                } absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000`}
+                } absolute top-0 left-0 w-full h-full object-fill transition-opacity duration-1000`}
             />
           ))
           : null}

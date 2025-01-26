@@ -130,9 +130,6 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
   return (
     <Dialog open={open} onOpenChange={handleDialogClose}>
       <DialogContent className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:p-12 max-w-[90vw] sm:max-w-[80vw] lg:max-w-[70vw] max-h-[90vh] overflow-y-auto">
-      <DialogTitle>
-          <VisuallyHidden>product details</VisuallyHidden>
-        </DialogTitle>
         <div className="relative overflow-hidden rounded-lg">
           <img
             src={productDetails?.image}
@@ -145,7 +142,7 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
         <div className="">
           <div>
             <h1 className="text-3xl font-extrabold">{productDetails?.title}</h1>
-            <p className="text-muted-foreground text-2xl mb-5 mt-4">
+            <p className="text-muted-foreground text-base mb-5 mt-4">
               {productDetails?.description}
             </p>
           </div>

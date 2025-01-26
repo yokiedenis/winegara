@@ -80,7 +80,7 @@ app.use("/api/shop/order", shopOrderRouter);
 app.use("/api/admin/orders", adminOrderRouter);
 app.use("/api/shop/search", shopSearchRouter);
 app.use("/api/common/feature", commonFeatureRouter);
-app.use("/api/common/feature", commonFeatureRouter);
+
 
 
 app.listen(PORT, () => console.log(`Server is now running on port ${PORT}`));

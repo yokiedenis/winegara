@@ -53,9 +53,6 @@ function AdminOrderDetailsView({ orderDetails }) {
 
   return (
     <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
-      <DialogTitle>
-          <VisuallyHidden>order details</VisuallyHidden>
-        </DialogTitle>
       <div className="grid gap-6">
         <div className="grid gap-2">
           <div className="flex mt-6 items-center justify-between">
