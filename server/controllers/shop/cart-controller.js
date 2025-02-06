@@ -1,5 +1,31 @@
+require("dotenv").config();
 const Cart = require("../../models/Cart");
 const Product = require("../../models/Product");
+const express = require("express");
+const session = require("express-session")
+const mongoDbsession = require("connect-mongodb-session")(session)
+const app = express();
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.set('trust proxy', true)
+const store = new mongoDbsession({
+  uri: process.env.MONGO_URI,
+  collection: "sessions",
+});
+
+app.use(
+  session({
+    secret: process.env.SECRET_KEY,
+    resave: false,
+    saveUninitialized: false,
+    store: store,
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 24, 
+      httpOnly: true,
+    },
+  })
+);
 
 // Add to Cart - Handles both guests and logged-in users
 const addToCart = async (req, res) => {

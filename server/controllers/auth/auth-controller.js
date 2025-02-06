@@ -3,7 +3,32 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../../models/User");
 const Cart = require("../../models/Cart"); // Add Cart model import
+
 const express = require("express");
+const session = require("express-session")
+const mongoDbsession = require("connect-mongodb-session")(session)
+const app = express();
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.set('trust proxy', true)
+const store = new mongoDbsession({
+  uri: process.env.MONGO_URI,
+  collection: "sessions",
+});
+
+app.use(
+  session({
+    secret: process.env.SECRET_KEY,
+    resave: false,
+    saveUninitialized: false,
+    store: store,
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 24, 
+      httpOnly: true,
+    },
+  })
+);
 
 // Register
 const registerUser = async (req, res) => {
