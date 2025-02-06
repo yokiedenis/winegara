@@ -32,14 +32,14 @@ const store = new mongoDbsession({
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+app.set('trust proxy', true)
 
 //for session
 app.use(
   session({
     secret: process.env.SECRET_KEY,
-    resave: false,
-    saveUninitialized: false,
+    resave: true,
+    saveUninitialized: true,
     store: store,
     cookie: {
       maxAge: 1000 * 60 * 60 * 24, 
