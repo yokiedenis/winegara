@@ -1,5 +1,4 @@
 const express = require("express");
-
 const {
   addToCart,
   fetchCartItems,
@@ -9,9 +8,16 @@ const {
 
 const router = express.Router();
 
+// Add to Cart (for both guests and logged-in users)
 router.post("/add", addToCart);
-router.get("/get/:userId", fetchCartItems);
-router.put("/update-cart", updateCartItemQty);
-router.delete("/:userId/:productId", deleteCartItem);
+
+// Fetch Cart Items (for both guests and logged-in users)
+router.get("/get", fetchCartItems);
+
+// Update Cart Item Quantity (for both guests and logged-in users)
+router.put("/update", updateCartItemQty);
+
+// Delete Cart Item (for both guests and logged-in users)
+router.delete("/delete/:productId", deleteCartItem);
 
 module.exports = router;

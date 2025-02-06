@@ -27,10 +27,12 @@ const store = new mongoDbsession({
   collection: "sessions",
 });
 
+
 //middleware
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 
 //for session
 app.use(
@@ -39,6 +41,10 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store: store,
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 24, 
+      httpOnly: true,
+    },
   })
 );
 
@@ -52,7 +58,7 @@ mongoose
 
 app.use(
   cors({
-    origin:process.env.CLIENT_BASE_URL,
+    origin: process.env.CLIENT_BASE_URL,
     methods: ["GET", "POST", "DELETE", "PUT"],
     allowedHeaders: [
       "Content-Type",
@@ -66,6 +72,17 @@ app.use(
   })
 );
 
+const generateGuestId = () => {
+  return Date.now() + Math.floor(Math.random() * 1000);
+};
+
+const setGuestId = (req, res, next) => {
+  if (!req.session.guestId) {
+    req.session.guestId = generateGuestId();
+  }
+  next();
+};
+
 
 
 
@@ -73,13 +90,14 @@ app.use(
 app.use("/api/auth", authRouter);
 app.use("/api/admin/products", adminProductsRouter);
 app.use("/api/shop/products", shopProductsRouter);
-app.use("/api/shop/cart", shopCartRouter);
 app.use("/api/shop/review", shopReviewRouter);
 app.use("/api/shop/address", shopAddressRouter);
 app.use("/api/shop/order", shopOrderRouter);
 app.use("/api/admin/orders", adminOrderRouter);
 app.use("/api/shop/search", shopSearchRouter);
 app.use("/api/common/feature", commonFeatureRouter);
+app.use(setGuestId);
+app.use("/api/shop/cart", shopCartRouter);
 
 
 
