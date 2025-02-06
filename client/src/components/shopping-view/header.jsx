@@ -1,7 +1,6 @@
 import { HousePlug, LogOut, Menu, ShoppingCart, UserCog } from "lucide-react";
 import {
   Link,
-  Navigate,
   useLocation,
   useNavigate,
   useSearchParams,
@@ -19,14 +18,13 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "../ui/avatar";
-import { logoutUser, resetTokenAndCredentials } from "@/store/auth-slice";
+import {logoutUser, resetTokenAndCredentials } from "@/store/auth-slice";
 import UserCartWrapper from "./cart-wrapper";
 import { useEffect, useState } from "react";
 import { fetchCartItems } from "@/store/shop/cart-slice";
 import { Label } from "../ui/label";
 
-
-function MenuItems( {closeSheet} ) {
+function MenuItems({ closeSheet }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -35,24 +33,21 @@ function MenuItems( {closeSheet} ) {
     sessionStorage.removeItem("filters");
     const currentFilter =
       getCurrentMenuItem.id !== "home" &&
-        getCurrentMenuItem.id !== "products" &&
-        getCurrentMenuItem.id !== "search"
+      getCurrentMenuItem.id !== "products" &&
+      getCurrentMenuItem.id !== "search"
         ? {
-          category: [getCurrentMenuItem.id],
-        }
+            category: [getCurrentMenuItem.id],
+          }
         : null;
 
     sessionStorage.setItem("filters", JSON.stringify(currentFilter));
 
-    location.pathname.includes("listing") && currentFilter !== null
-      ? setSearchParams(
-        new URLSearchParams(`?category=${getCurrentMenuItem.id}`)
-      )
-      : navigate(getCurrentMenuItem.path);
-      closeSheet();
-
-      
-      
+    if (location.pathname.includes("listing") && currentFilter !== null) {
+      setSearchParams(new URLSearchParams(`?category=${getCurrentMenuItem.id}`));
+    } else {
+      navigate(getCurrentMenuItem.path);
+    }
+    closeSheet();
   }
 
   return (
@@ -61,7 +56,7 @@ function MenuItems( {closeSheet} ) {
         <Label
           onClick={() => handleNavigate(menuItem)}
           className="text-sm font-medium cursor-pointer"
-          key={menuItem.id}
+          
         >
           {menuItem.label}
         </Label>
@@ -77,21 +72,17 @@ function HeaderRightContent({ closeSheet }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-
   function handleLogout() {
-    //for secure
-    // dispatch(logoutUser());
+    dispatch(logoutUser());
     dispatch(resetTokenAndCredentials());
     sessionStorage.clear();
     navigate("/auth/login");
   }
-  
 
   useEffect(() => {
-    dispatch(fetchCartItems(user?.id));
+    // Fetch cart items for both guests and logged-in users
+    dispatch(fetchCartItems());
   }, [dispatch]);
-
-  // console.log(cartItems, "sangam");
 
   return (
     <div className="flex lg:items-center lg:flex-row flex-col gap-4">
@@ -104,52 +95,56 @@ function HeaderRightContent({ closeSheet }) {
         >
           <ShoppingCart className="w-6 h-6" />
           <span className="absolute top-[-5px] right-[2px] font-bold text-sm">
-            {cartItems?.items?.length || 0}
+            {cartItems?.length || 0} {/* Display total cart items */}
           </span>
           <span className="sr-only">User cart</span>
         </Button>
         <UserCartWrapper
           setOpenCartSheet={setOpenCartSheet}
-          cartItems={
-            cartItems && cartItems.items && cartItems.items.length > 0
-              ? cartItems.items
-              : []
-          }
-          
+          cartItems={cartItems || []} // Pass cart items directly
         />
       </Sheet>
 
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Avatar className="bg-black cursor-pointer">
-            <AvatarFallback className="bg-black text-white font-extrabold">
-              {user?.userName[0].toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent side="right" className="w-56">
-          <DropdownMenuLabel>Logged in as {user?.userName}</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => {navigate("/shop/account"); closeSheet()}}>
-            <UserCog className="mr-2 h-4 w-4 " />
-            Account
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={handleLogout}>
-            <LogOut className="mr-2 h-4 w-4" />
-            Logout
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      {user ? (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Avatar className="bg-black cursor-pointer">
+              <AvatarFallback className="bg-black text-white font-extrabold">
+                {user?.userName[0].toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent side="right" className="w-56">
+            <DropdownMenuLabel>Logged in as {user?.userName}</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => {
+                navigate("/shop/account");
+                closeSheet();
+              }}
+            >
+              <UserCog className="mr-2 h-4 w-4" />
+              Account
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={handleLogout}>
+              <LogOut className="mr-2 h-4 w-4" />
+              Logout
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ) : (
+        <Button onClick={() => navigate("/auth/login")} variant="outline">
+          Login
+        </Button>
+      )}
     </div>
   );
 }
 
 function ShoppingHeader() {
-  const { isAuthenticated } = useSelector((state) => state.auth);
-  const [openSheet, setOpenSheet] = useState(false); 
+  const [openSheet, setOpenSheet] = useState(false);
   const closeSheet = () => setOpenSheet(false);
-  
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background">
@@ -166,16 +161,15 @@ function ShoppingHeader() {
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="w-full max-w-xs">
-          <MenuItems closeSheet={closeSheet} />
-          <HeaderRightContent closeSheet={closeSheet} />
+            <MenuItems closeSheet={closeSheet} />
+            <HeaderRightContent closeSheet={closeSheet} />
           </SheetContent>
         </Sheet>
         <div className="hidden lg:block">
-        <MenuItems closeSheet={closeSheet} />
+          <MenuItems closeSheet={closeSheet} />
         </div>
-
         <div className="hidden lg:block">
-        <HeaderRightContent closeSheet={closeSheet} />
+          <HeaderRightContent closeSheet={closeSheet} />
         </div>
       </div>
     </header>

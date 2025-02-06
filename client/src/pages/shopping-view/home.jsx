@@ -71,23 +71,56 @@ function ShoppingHome() {
     dispatch(fetchProductDetails(getCurrentProductId));
   }
 
-  function handleAddtoCart(getCurrentProductId) {
-    dispatch(
-      addToCart({
-        userId: user?.id,
-        productId: getCurrentProductId,
-        quantity: 1,
-      })
-    ).then((data) => {
-      if (data?.payload?.success) {
-        dispatch(fetchCartItems(user?.id));
-        toast({
-          title: "Product is added to cart",
-        });
+  const handleAddtoCart = async (getCurrentProductId) => {
+    const productData = {
+      productId: getCurrentProductId,
+      quantity: 1,
+    };
+  
+    // If the user is logged in, use userId; otherwise, work with the session for guest users
+    const userId = user?.id;
+  
+    try {
+      if (userId) {
+        // If logged in, proceed with MongoDB cart
+        const response = await dispatch(
+          addToCart({
+            userId,
+            ...productData,
+          })
+        );
+        
+        if (response?.payload?.success) {
+          dispatch(fetchCartItems(userId)); // Fetch updated cart after adding item
+          toast({
+            title: "Product added to cart",
+          });
+        }
+      } else {
+        // For guest users, store cart in session
+        const response = await dispatch(
+          addToCart({
+            ...productData,
+          })
+        );
+        
+        if (response?.payload?.success) {
+          // Fetch the session cart after adding item
+          dispatch(fetchCartItems()); // Can be adjusted based on your session cart fetching
+          toast({
+            title: "Product added to cart",
+          });
+        }
       }
-    });
-  }
-
+    } catch (error) {
+      console.error("Error adding product to cart:", error);
+      toast({
+        title: "Something went wrong!",
+        description: "Failed to add product to cart.",
+      });
+    }
+  };
+  
   useEffect(() => {
     if (productDetails !== null) setOpenDetailsDialog(true);
   }, [productDetails]);
@@ -122,7 +155,6 @@ function ShoppingHome() {
           ? featureImageList.map((slide, index) => (
             <img
               src={slide?.image}
-              key={index}
               className={`${index === currentSlide ? "opacity-100" : "opacity-0"
                 } absolute top-0 left-0 w-full h-full object-fill transition-opacity duration-1000`}
             />
@@ -225,3 +257,4 @@ function ShoppingHome() {
 }
 
 export default ShoppingHome;
+

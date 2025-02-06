@@ -4,62 +4,74 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 const initialState = {
   cartItems: [],
   isLoading: false,
+  isGuestCart: false, // Tracks whether the cart belongs to a guest
 };
 
+// Add to Cart
 export const addToCart = createAsyncThunk(
   "cart/addToCart",
-  async ({ userId, productId, quantity }) => {
-    const response = await axios.post(
-      `${import.meta.env.VITE_API_URL}/api/shop/cart/add`,
-      {
-        userId,
-        productId,
-        quantity,
-      }
-    );
-
-    return response.data;
+  async ({ productId, quantity }, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/shop/cart/add`,
+        { productId, quantity },
+        { withCredentials: true }
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "An error occurred");
+    }
   }
 );
 
+// Fetch Cart Items
 export const fetchCartItems = createAsyncThunk(
   "cart/fetchCartItems",
-  async (userId) => {
-    const response = await axios.get(
-      `${import.meta.env.VITE_API_URL}/api/shop/cart/get/${userId}`
-    );
-
-    return response.data;
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/shop/cart/get`,
+        { withCredentials: true }
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "An error occurred");
+    }
   }
 );
 
+// Delete Cart Item
 export const deleteCartItem = createAsyncThunk(
   "cart/deleteCartItem",
-  async ({ userId, productId }) => {
-    const response = await axios.delete(
-      `${import.meta.env.VITE_API_URL}/api/shop/cart/${userId}/${productId}`
-    );
-
-    return response.data;
+  async (productId, { rejectWithValue }) => {
+    try {
+      const response = await axios.delete(
+        `${import.meta.env.VITE_API_URL}/api/shop/cart/delete/${productId}`,
+        { withCredentials: true }
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Error deleting item");
+    }
   }
 );
 
+// Update Cart Quantity
 export const updateCartQuantity = createAsyncThunk(
   "cart/updateCartQuantity",
-  async ({ userId, productId, quantity }) => {
-    const response = await axios.put(
-      `${import.meta.env.VITE_API_URL}/api/shop/cart/update-cart`,
-      {
-        userId,
-        productId,
-        quantity,
-      }
-    );
-
-    return response.data;
+  async ({ productId, quantity }, { rejectWithValue }) => {
+    try {
+      const response = await axios.put(
+        `${import.meta.env.VITE_API_URL}/api/shop/cart/update`,
+        { productId, quantity },
+        { withCredentials: true }
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "An error occurred");
+    }
   }
 );
-
 const shoppingCartSlice = createSlice({
   name: "shoppingCart",
   initialState,
@@ -72,6 +84,7 @@ const shoppingCartSlice = createSlice({
       .addCase(addToCart.fulfilled, (state, action) => {
         state.isLoading = false;
         state.cartItems = action.payload.data;
+        state.isGuestCart = !action.payload.userId;
       })
       .addCase(addToCart.rejected, (state) => {
         state.isLoading = false;
@@ -82,7 +95,8 @@ const shoppingCartSlice = createSlice({
       })
       .addCase(fetchCartItems.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.cartItems = action.payload.data;
+        state.cartItems = action.payload.data || [];
+        state.isGuestCart = !action.payload.userId;
       })
       .addCase(fetchCartItems.rejected, (state) => {
         state.isLoading = false;
@@ -112,5 +126,4 @@ const shoppingCartSlice = createSlice({
       });
   },
 });
-
 export default shoppingCartSlice.reducer;

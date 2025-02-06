@@ -27,12 +27,9 @@ function createSearchParamsHelper(filterParams) {
   for (const [key, value] of Object.entries(filterParams)) {
     if (Array.isArray(value) && value.length > 0) {
       const paramValue = value.join(",");
-
       queryParams.push(`${key}=${encodeURIComponent(paramValue)}`);
     }
   }
-
-  // console.log(queryParams, "queryParams");
 
   return queryParams.join("&");
 }
@@ -52,10 +49,12 @@ function ShoppingListing() {
 
   const categorySearchParam = searchParams.get("category");
 
+  // Handle sorting
   function handleSort(value) {
     setSort(value);
   }
 
+  // Handle filtering
   function handleFilter(getSectionId, getCurrentOption) {
     let cpyFilters = { ...filters };
     const indexOfCurrentSection = Object.keys(cpyFilters).indexOf(getSectionId);
@@ -78,13 +77,13 @@ function ShoppingListing() {
     sessionStorage.setItem("filters", JSON.stringify(cpyFilters));
   }
 
+  // Fetch product details
   function handleGetProductDetails(getCurrentProductId) {
-    // console.log(getCurrentProductId);
     dispatch(fetchProductDetails(getCurrentProductId));
   }
 
+  // Add item to cart
   function handleAddtoCart(getCurrentProductId, getTotalStock) {
-    // console.log(cartItems);
     let getCartItems = cartItems.items || [];
 
     if (getCartItems.length) {
@@ -98,7 +97,6 @@ function ShoppingListing() {
             title: `Only ${getQuantity} quantity can be added for this item`,
             variant: "destructive",
           });
-
           return;
         }
       }
@@ -106,25 +104,33 @@ function ShoppingListing() {
 
     dispatch(
       addToCart({
-        userId: user?.id,
         productId: getCurrentProductId,
         quantity: 1,
       })
-    ).then((data) => {
-      if (data?.payload?.success) {
-        dispatch(fetchCartItems(user?.id));
+    )
+      .then((data) => {
+        if (data?.payload?.success) {
+          dispatch(fetchCartItems()); // Fetch updated cart items
+          toast({
+            title: "Product added to cart",
+          });
+        }
+      })
+      .catch(() => {
         toast({
-          title: "Product is added to cart",
+          title: "Failed to add product to cart",
+          variant: "destructive",
         });
-      }
-    });
+      });
   }
 
+  // Initialize filters and sort
   useEffect(() => {
     setSort("price-lowtohigh");
     setFilters(JSON.parse(sessionStorage.getItem("filters")) || {});
   }, [categorySearchParam]);
 
+  // Update search params when filters change
   useEffect(() => {
     if (filters && Object.keys(filters).length > 0) {
       const createQueryString = createSearchParamsHelper(filters);
@@ -132,6 +138,7 @@ function ShoppingListing() {
     }
   }, [filters]);
 
+  // Fetch filtered products
   useEffect(() => {
     if (filters !== null && sort !== null)
       dispatch(
@@ -139,11 +146,10 @@ function ShoppingListing() {
       );
   }, [dispatch, sort, filters]);
 
+  // Open product details dialog
   useEffect(() => {
     if (productDetails !== null) setOpenDetailsDialog(true);
   }, [productDetails]);
-
-  // console.log(productList, "productListproductListproductList");
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6 p-4 md:p-6">
@@ -155,7 +161,7 @@ function ShoppingListing() {
             <span className="text-muted-foreground">
               {productList?.length} Products
             </span>
-            <DropdownMenu>      
+            <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
@@ -185,6 +191,7 @@ function ShoppingListing() {
           {productList && productList.length > 0
             ? productList.map((productItem) => (
                 <ShoppingProductTile
+                  key={productItem._id} // Unique key for each product
                   handleGetProductDetails={handleGetProductDetails}
                   product={productItem}
                   handleAddtoCart={handleAddtoCart}

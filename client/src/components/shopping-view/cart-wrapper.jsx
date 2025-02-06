@@ -6,6 +6,7 @@ import UserCartItemsContent from "./cart-items-content";
 function UserCartWrapper({ cartItems, setOpenCartSheet }) {
   const navigate = useNavigate();
 
+  // Calculate the total cart amount
   const totalCartAmount =
     cartItems && cartItems.length > 0
       ? cartItems.reduce(
@@ -19,38 +20,48 @@ function UserCartWrapper({ cartItems, setOpenCartSheet }) {
         )
       : 0;
 
-      const formatCurrency = (amount) => {
-        return new Intl.NumberFormat('en-US', {
-          style: 'currency',
-          currency: 'UGX', // Change this to your desired currency code
-          minimumFractionDigits: 0,
-        }).format(amount);
-      };
+  // Format currency
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "UGX", // Change this to your desired currency code
+      minimumFractionDigits: 0,
+    }).format(amount);
+  };
+
   return (
     <SheetContent className="sm:max-w-md">
       <SheetHeader>
         <SheetTitle>Your Cart</SheetTitle>
       </SheetHeader>
       <div className="mt-8 space-y-4">
-        {cartItems && cartItems.length > 0
-          ? cartItems.map((item) => <UserCartItemsContent cartItem={item} />)
-          : null}
+        {cartItems && cartItems.length > 0 ? (
+          cartItems.map((item) => (
+            <UserCartItemsContent key={`${item.productId}-${item.addedAt}`}  cartItem={item} />
+          ))
+        ) : (
+          <p className="text-center text-gray-500">Your cart is empty.</p>
+        )}
       </div>
-      <div className="mt-8 space-y-4">
-        <div className="flex justify-between">
-          <span className="font-bold">Total</span>
-          <span className="font-bold">{formatCurrency(totalCartAmount)}</span>
-        </div>
-      </div>
-      <Button
-        onClick={() => {
-          navigate("/shop/checkout");
-          setOpenCartSheet(false);
-        }}
-        className="w-full mt-6"
-      >
-        Checkout
-      </Button>
+      {cartItems && cartItems.length > 0 && (
+        <>
+          <div className="mt-8 space-y-4">
+            <div className="flex justify-between">
+              <span className="font-bold">Total</span>
+              <span className="font-bold">{formatCurrency(totalCartAmount)}</span>
+            </div>
+          </div>
+          <Button
+            onClick={() => {
+              navigate("/shop/checkout");
+              setOpenCartSheet(false);
+            }}
+            className="w-full mt-6"
+          >
+            Checkout
+          </Button>
+        </>
+      )}
     </SheetContent>
   );
 }
