@@ -5,6 +5,7 @@ const express = require("express");
 const session = require("express-session")
 const mongoDbsession = require("connect-mongodb-session")(session)
 const app = express();
+const mongoose = require("mongoose");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -26,6 +27,11 @@ app.use(
     },
   })
 );
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log("MongoDB connected"))
+  .catch((error) => console.log(error));
+
 
 // Add to Cart - Handles both guests and logged-in users
 const addToCart = async (req, res) => {
