@@ -83,7 +83,7 @@ function ShoppingHome() {
     try {
       if (userId) {
         // If logged in, proceed with MongoDB cart
-        const response = await dispatch(
+        const response = dispatch(
           addToCart({
             userId,
             ...productData,
@@ -91,14 +91,14 @@ function ShoppingHome() {
         );
         
         if (response?.payload?.success) {
-          dispatch(fetchCartItems(userId)); // Fetch updated cart after adding item
+          dispatch(fetchCartItems()); // Fetch updated cart after adding item
           toast({
             title: "Product added to cart",
           });
         }
       } else {
         // For guest users, store cart in session
-        const response = await dispatch(
+        const response =dispatch(
           addToCart({
             ...productData,
           })
@@ -258,4 +258,3 @@ function ShoppingHome() {
 
 export default ShoppingHome;
 
-  
