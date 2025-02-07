@@ -17,7 +17,9 @@ export const addToCart = createAsyncThunk(
         { productId, quantity },
         { withCredentials: true }
       );
+      console.log(response.data)
       return response.data;
+      
     } catch (error) {
       return rejectWithValue(error.response?.data || "An error occurred");
     }
