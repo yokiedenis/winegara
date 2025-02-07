@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // app.set('trust proxy', true)
 const store = new mongoDbsession({
-  uri: process.env.MONGO_URI,
+  uri: process.env.MONGODB_URI,
   collection: "sessions",
 });
 
@@ -28,7 +28,7 @@ app.use(
   })
 );
 mongoose
-  .connect(process.env.MONGO_URI,{ useNewUrlParser: true,useUnifiedTopology: true,
+  .connect(process.env.MONGODB_URI,{ useNewUrlParser: true,useUnifiedTopology: true,
     useCreateIndex: true,useMongoClient:true })
   .then(() => console.log("MongoDB connected"))
   .catch((error) => console.log(error));

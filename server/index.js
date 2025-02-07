@@ -23,7 +23,7 @@ const commonFeatureRouter = require("./routes/common/feature-routes");
 const app = express();
 const PORT = process.env.PORT || 5000;
 const store = new mongoDbsession({
-  uri: process.env.MONGO_URI,
+  uri: process.env.MONGODB_URI,
   collection: "sessions",
 });
 
@@ -51,7 +51,7 @@ app.use(
 
 //create a database connection 
 mongoose
-  .connect(process.env.MONGO_URI,{ useNewUrlParser: true,useUnifiedTopology: true,
+  .connect(process.env.MONGODB_URI,{ useNewUrlParser: true,useUnifiedTopology: true,
     useCreateIndex: true,useMongoClient:true })
   .then(() => console.log("MongoDB connected"))
   .catch((error) => console.log(error));
