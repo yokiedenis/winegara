@@ -5,7 +5,7 @@ const {
   logoutUser,
   authMiddleware,
 } = require("../../controllers/auth/auth-controller");
-const isAuth=require("../../server")
+const isAuth=require("../..")
 const router = express.Router();
 
 
