@@ -104,9 +104,10 @@ function ShoppingHome() {
             ...productData,
           })
         ).then((data) => {
-          if (data?.payload?.success) {
-            console.log(data?.payload?.success)
+           console.log(data?.payload?.success)
             console.log(addToCart.fulfilled.match(response));
+          if (data?.payload?.success) {
+           
             dispatch(fetchCartItems());
             toast({
               title: "Product is added to cart",

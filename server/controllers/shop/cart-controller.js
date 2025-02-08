@@ -9,7 +9,7 @@ const mongoose = require("mongoose");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// app.set('trust proxy', true)
+app.set('trust proxy', true)
 const store = new mongoDbsession({
   uri: process.env.MONGODB_URI,
   collection: "sessions",
