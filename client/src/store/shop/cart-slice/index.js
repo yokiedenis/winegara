@@ -17,7 +17,7 @@ export const addToCart = createAsyncThunk(
         { productId, quantity },
         { withCredentials: true }
       );
-      console.log(response.data)
+      console.log("add",response.data)
       return response.data;
       
     } catch (error) {
@@ -35,6 +35,7 @@ export const fetchCartItems = createAsyncThunk(
         `${import.meta.env.VITE_API_URL}/api/shop/cart/get`,
         { withCredentials: true }
       );
+      console.log("fetch",response.data)
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "An error occurred");
@@ -45,12 +46,13 @@ export const fetchCartItems = createAsyncThunk(
 // Delete Cart Item
 export const deleteCartItem = createAsyncThunk(
   "cart/deleteCartItem",
-  async (productId, { rejectWithValue }) => {
+  async (productId, { rejectWithValue }) => { 
     try {
       const response = await axios.delete(
         `${import.meta.env.VITE_API_URL}/api/shop/cart/delete/${productId}`,
         { withCredentials: true }
       );
+      console.log(response.data)
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Error deleting item");

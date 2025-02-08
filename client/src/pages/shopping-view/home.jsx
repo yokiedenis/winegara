@@ -85,7 +85,6 @@ function ShoppingHome() {
         // If logged in, proceed with MongoDB cart
         const response = dispatch(
           addToCart({
-            userId,
             ...productData,
           })
         );

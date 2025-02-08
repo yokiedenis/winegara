@@ -95,7 +95,7 @@ function HeaderRightContent({ closeSheet }) {
         >
           <ShoppingCart className="w-6 h-6" />
           <span className="absolute top-[-5px] right-[2px] font-bold text-sm">
-            {cartItems?.length || 0} {/* Display total cart items */}
+            {cartItems.length} {/* Display total cart items */}
           </span>
           <span className="sr-only">User cart</span>
         </Button>

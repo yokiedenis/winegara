@@ -18,7 +18,7 @@ function UserCartItemsContent({ cartItem }) {
     const product = productList.find(p => p._id === cartItem.productId);
     
     if (!product) {
-      await dispatch(deleteCartItem(cartItem.productId));
+       dispatch(deleteCartItem(cartItem.productId));
       toast({
         title: "Product not found",
         variant: "destructive",
@@ -36,7 +36,7 @@ function UserCartItemsContent({ cartItem }) {
     }
 
     try {
-      const response = await dispatch(updateCartQuantity({
+      const response = dispatch(updateCartQuantity({
         productId: cartItem.productId,
         quantity: newQuantity
       }));
@@ -54,7 +54,7 @@ function UserCartItemsContent({ cartItem }) {
 
   const handleDeleteItem = async () => {
     try {
-      const response = await dispatch(deleteCartItem(cartItem.productId));
+      const response = dispatch(deleteCartItem(cartItem.productId));
 
       if (response?.payload?.success) {
         toast({ title: "Item removed from cart" });
