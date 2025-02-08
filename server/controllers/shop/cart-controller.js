@@ -15,18 +15,7 @@ const store = new mongoDbsession({
   collection: "sessions",
 });
 
-app.use(
-  session({
-    secret: process.env.SECRET_KEY,
-    resave: false,
-    saveUninitialized: false,
-    store: store,
-    cookie: {
-      maxAge: 1000 * 60 * 60 * 24, 
-      httpOnly: true,
-    },
-  })
-);
+
 mongoose
   .connect(process.env.MONGODB_URI,{ useNewUrlParser: true,useUnifiedTopology: true,
     useCreateIndex: true,useMongoClient:true })

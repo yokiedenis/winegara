@@ -84,10 +84,12 @@ function ShoppingHome() {
       if (userId) {
         // If logged in, proceed with MongoDB cart
         const response = dispatch(
-       addToCart({
+          addToCart({
             ...productData,
           })
         ).then((data) => {
+          console.log(data?.payload?.success)
+          console.log(addToCart.fulfilled.match(response));
           if (data?.payload?.success) {
             dispatch(fetchCartItems());
             toast({
@@ -103,7 +105,9 @@ function ShoppingHome() {
           })
         ).then((data) => {
           if (data?.payload?.success) {
-            dispatch(fetchCartItems(user?.id));
+            console.log(data?.payload?.success)
+            console.log(addToCart.fulfilled.match(response));
+            dispatch(fetchCartItems());
             toast({
               title: "Product is added to cart",
             });

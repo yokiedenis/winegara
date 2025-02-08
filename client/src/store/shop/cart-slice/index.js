@@ -52,7 +52,7 @@ export const deleteCartItem = createAsyncThunk(
         `${import.meta.env.VITE_API_URL}/api/shop/cart/delete/${productId}`,
         { withCredentials: true }
       );
-      console.log(response.data)
+      console.log("delete",response.data)
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Error deleting item");
@@ -71,6 +71,7 @@ export const updateCartQuantity = createAsyncThunk(
         { withCredentials: true }
       );
       return response.data;
+      console.log("updare",response.data)
     } catch (error) {
       return rejectWithValue(error.response?.data || "An error occurred");
     }
