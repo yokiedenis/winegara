@@ -44,8 +44,12 @@ app.use(
     cookie: {
       maxAge: 1000 * 60 * 60 * 24, 
       httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // Enable in production
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      domain: process.env.NODE_ENV === "production" ? process.env.CLIENT_BASE_URL : undefined
     },
-  })
+    },
+  )
 );
 
 

@@ -33,6 +33,24 @@ mongoose
   .then(() => console.log("MongoDB connected"))
   .catch((error) => console.log(error));
 
+  //for session
+app.use(
+  session({
+    secret: process.env.SECRET_KEY,
+    resave: false,
+    saveUninitialized: false,
+    store: store,
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 24, 
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // Enable in production
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      domain: process.env.NODE_ENV === "production" ? process.env.CLIENT_BASE_URL : undefined
+    },
+    },
+  )
+);
+
 
 // Add to Cart - Handles both guests and logged-in users
 const addToCart = async (req, res) => {
@@ -80,7 +98,10 @@ const addToCart = async (req, res) => {
           return product ? { ...item, ...product.toObject() } : null;
         })
       );
+      
       populatedItems = populatedItems.filter((item) => item !== null);
+      console.log("Session ID:", req.sessionID);
+console.log("Session data:", req.session);
       // console.log("popy", populatedItems);
       return res.status(200).json({ success: true, data: populatedItems });
     }
