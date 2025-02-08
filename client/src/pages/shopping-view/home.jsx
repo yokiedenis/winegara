@@ -84,32 +84,31 @@ function ShoppingHome() {
       if (userId) {
         // If logged in, proceed with MongoDB cart
         const response = dispatch(
-          addToCart({
+       addToCart({
             ...productData,
           })
-        );
-        
-        if (response?.payload?.success) {
-          dispatch(fetchCartItems()); // Fetch updated cart after adding item
-          toast({
-            title: "Product added to cart",
-          });
-        }
+        ).then((data) => {
+          if (data?.payload?.success) {
+            dispatch(fetchCartItems());
+            toast({
+              title: "Product is added to cart",
+            });
+          }
+        });
       } else {
         // For guest users, store cart in session
         const response =dispatch(
           addToCart({
             ...productData,
           })
-        );
-        
-        if (response?.payload?.success) {
-          // Fetch the session cart after adding item
-          dispatch(fetchCartItems()); // Can be adjusted based on your session cart fetching
-          toast({
-            title: "Product added to cart",
-          });
-        }
+        ).then((data) => {
+          if (data?.payload?.success) {
+            dispatch(fetchCartItems(user?.id));
+            toast({
+              title: "Product is added to cart",
+            });
+          }
+        });
       }
     } catch (error) {
       console.error("Error adding product to cart:", error);
