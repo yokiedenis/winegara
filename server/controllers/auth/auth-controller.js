@@ -8,7 +8,9 @@ const express = require("express");
 const session = require("express-session")
 const mongoDbsession = require("connect-mongodb-session")(session)
 const app = express();
-
+const cookieParser = require("cookie-parser");
+const cors = require("cors");
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.set('trust proxy', true)
@@ -29,10 +31,25 @@ app.use(
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // Enable in production
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      domain: process.env.NODE_ENV === "production" ? process.env.CLIENT_BASE_URL : undefined
+
     },
     },
   )
+);
+app.use(
+  cors({
+    origin: process.env.CLIENT_BASE_URL,
+    methods: ["GET", "POST", "DELETE", "PUT"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "Cache-Control",
+      "Expires",
+      "Pragma",
+    ],
+    credentials: true,
+    optionSuccessStatus: 200
+  })
 );
 mongoose
   .connect(process.env.MONGODB_URI)

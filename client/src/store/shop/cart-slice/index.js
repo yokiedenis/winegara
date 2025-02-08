@@ -15,7 +15,9 @@ export const addToCart = createAsyncThunk(
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/shop/cart/add`,
         { productId, quantity },
-        { withCredentials: true }
+        { withCredentials: true,
+          credentials: "include",
+        }
       );
       console.log("add",response.data)
       return response.data;
@@ -33,7 +35,9 @@ export const fetchCartItems = createAsyncThunk(
     try {
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/api/shop/cart/get`,
-        { withCredentials: true }
+        { withCredentials: true,
+          credentials: "include"
+         }
       );
       console.log("fetch",response.data)
       return response.data;
@@ -50,7 +54,9 @@ export const deleteCartItem = createAsyncThunk(
     try {
       const response = await axios.delete(
         `${import.meta.env.VITE_API_URL}/api/shop/cart/delete/${productId}`,
-        { withCredentials: true }
+        { withCredentials: true,
+          credentials: "include"
+         }
       );
       console.log("delete",response.data)
       return response.data;
@@ -68,7 +74,9 @@ export const updateCartQuantity = createAsyncThunk(
       const response = await axios.put(
         `${import.meta.env.VITE_API_URL}/api/shop/cart/update`,
         { productId, quantity },
-        { withCredentials: true }
+        { withCredentials: true,
+          credentials: "include"
+         }
       );
       return response.data;
       console.log("updare",response.data)
