@@ -62,7 +62,15 @@ app.use(
     optionSuccessStatus: 200,
   })
 );
-
+app.use((req, res, next) => {
+  if (process.env.NODE_ENV === "production") {
+    res.setHeader(
+      "Set-Cookie",
+      `session=${req.sessionID}; HttpOnly; Secure; SameSite=None; Path=/`
+    );
+  }
+  next();
+});
 // Add to Cart - Handles both guests and logged-in users
 const addToCart = async (req, res) => {
   try {
