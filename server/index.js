@@ -78,15 +78,15 @@ app.use(
     optionSuccessStatus: 200,
   })
 );
-app.use((req, res, next) => {
-  if (process.env.NODE_ENV === "production") {
-    res.setHeader(
-      "Set-Cookie",
-      `session=${req.sessionID}; HttpOnly; Secure; SameSite=None; Path=/`
-    );
-  }
-  next();
-});
+// app.use((req, res, next) => {
+//   if (process.env.NODE_ENV === "production") {
+//     res.setHeader(
+//       "Set-Cookie",
+//       `session=${req.sessionID}; HttpOnly; Secure; SameSite=None; Path=/`
+//     );
+//   }
+//   next();
+// });
 const generateGuestId = () => {
   return Date.now() + Math.floor(Math.random() * 1000);
 };

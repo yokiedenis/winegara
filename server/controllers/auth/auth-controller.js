@@ -59,15 +59,15 @@ mongoose
   .then(() => console.log("MongoDB connected"))
   .catch((error) => console.log(error));
 
-  app.use((req, res, next) => {
-    if (process.env.NODE_ENV === "production") {
-      res.setHeader(
-        "Set-Cookie",
-        `session=${req.sessionID}; HttpOnly; Secure; SameSite=None; Path=/`
-      );
-    }
-    next();
-  });
+  // app.use((req, res, next) => {
+  //   if (process.env.NODE_ENV === "production") {
+  //     res.setHeader(
+  //       "Set-Cookie",
+  //       `session=${req.sessionID}; HttpOnly; Secure; SameSite=None; Path=/`
+  //     );
+  //   }
+  //   next();
+  // });
 // Register
 const registerUser = async (req, res) => {
   const { userName, email, password } = req.body;
