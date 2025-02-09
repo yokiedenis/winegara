@@ -44,7 +44,7 @@ const getFeatureImages = async (req, res) => {
 
 const deleteFeatureImage = async (req, res) => {
   try {
-    const { id } = req.params; 
+    const { id } = req.params;
     console.log(id, "image");
     const deletedImage = await Feature.findByIdAndDelete(id);
 
@@ -68,5 +68,4 @@ const deleteFeatureImage = async (req, res) => {
   }
 };
 
-
-module.exports = { addFeatureImage, getFeatureImages,deleteFeatureImage };
+module.exports = { addFeatureImage, getFeatureImages, deleteFeatureImage };

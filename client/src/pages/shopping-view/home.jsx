@@ -77,10 +77,10 @@ function ShoppingHome() {
       productId: getCurrentProductId,
       quantity: 1,
     };
-  
+
     // If the user is logged in, use userId; otherwise, work with the session for guest users
     const userId = user?.id;
-  
+
     try {
       if (userId) {
         // If logged in, proceed with MongoDB cart
@@ -89,7 +89,7 @@ function ShoppingHome() {
             ...productData,
           })
         ).then((data) => {
-          console.log("frontendlo",data?.payload?.success)
+          console.log("frontendlo", data?.payload?.success);
           if (data?.payload?.success) {
             dispatch(fetchCartItems());
             toast({
@@ -99,12 +99,12 @@ function ShoppingHome() {
         });
       } else {
         // For guest users, store cart in session
-        const response =dispatch(
+        const response = dispatch(
           addToCart({
             ...productData,
           })
         ).then((data) => {
-          console.log("frontendlo",data?.payload?.success)
+          console.log("frontendlo", data?.payload?.success);
           if (data?.payload?.success) {
             dispatch(fetchCartItems());
             toast({
@@ -121,7 +121,7 @@ function ShoppingHome() {
       });
     }
   };
-  
+
   useEffect(() => {
     if (productDetails !== null) setOpenDetailsDialog(true);
   }, [productDetails]);
@@ -154,12 +154,13 @@ function ShoppingHome() {
       <div className="relative w-full h-[30vh] sm:h-[300px] md:h-[400px] lg:h-[450px] ">
         {featureImageList && featureImageList.length > 0
           ? featureImageList.map((slide, index) => (
-            <img
-              src={slide?.image}
-              className={`${index === currentSlide ? "opacity-100" : "opacity-0"
+              <img
+                src={slide?.image}
+                className={`${
+                  index === currentSlide ? "opacity-100" : "opacity-0"
                 } absolute top-0 left-0 w-full h-full object-fill transition-opacity duration-1000`}
-            />
-          ))
+              />
+            ))
           : null}
         <Button
           variant="outline"
@@ -238,12 +239,12 @@ function ShoppingHome() {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {productList && productList.length > 0
               ? productList.map((productItem) => (
-                <ShoppingProductTile
-                  handleGetProductDetails={handleGetProductDetails}
-                  product={productItem}
-                  handleAddtoCart={handleAddtoCart}
-                />
-              ))
+                  <ShoppingProductTile
+                    handleGetProductDetails={handleGetProductDetails}
+                    product={productItem}
+                    handleAddtoCart={handleAddtoCart}
+                  />
+                ))
               : null}
           </div>
         </div>
@@ -258,4 +259,3 @@ function ShoppingHome() {
 }
 
 export default ShoppingHome;
-

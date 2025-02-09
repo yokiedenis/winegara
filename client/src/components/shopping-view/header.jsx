@@ -18,7 +18,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "../ui/avatar";
-import {logoutUser, resetTokenAndCredentials } from "@/store/auth-slice";
+import { logoutUser, resetTokenAndCredentials } from "@/store/auth-slice";
 import UserCartWrapper from "./cart-wrapper";
 import { useEffect, useState } from "react";
 import { fetchCartItems } from "@/store/shop/cart-slice";
@@ -43,7 +43,9 @@ function MenuItems({ closeSheet }) {
     sessionStorage.setItem("filters", JSON.stringify(currentFilter));
 
     if (location.pathname.includes("listing") && currentFilter !== null) {
-      setSearchParams(new URLSearchParams(`?category=${getCurrentMenuItem.id}`));
+      setSearchParams(
+        new URLSearchParams(`?category=${getCurrentMenuItem.id}`)
+      );
     } else {
       navigate(getCurrentMenuItem.path);
     }
@@ -56,7 +58,6 @@ function MenuItems({ closeSheet }) {
         <Label
           onClick={() => handleNavigate(menuItem)}
           className="text-sm font-medium cursor-pointer"
-          
         >
           {menuItem.label}
         </Label>
