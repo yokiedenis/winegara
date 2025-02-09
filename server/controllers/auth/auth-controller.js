@@ -31,11 +31,12 @@ app.use(
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // Enable in production
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-
+      domain: process.env.NODE_ENV === "production" ? process.env.CLIENT_BASE_URL : undefined
     },
     },
   )
 );
+
 app.use(
   cors({
     origin: process.env.CLIENT_BASE_URL,

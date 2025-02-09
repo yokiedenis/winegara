@@ -16,7 +16,7 @@ export const addToCart = createAsyncThunk(
         `${import.meta.env.VITE_API_URL}/api/shop/cart/add`,
         { productId, quantity },
         { withCredentials: true,
-          credentials: "include",
+         
         }
       );
       console.log("add",response.data)
@@ -36,7 +36,7 @@ export const fetchCartItems = createAsyncThunk(
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/api/shop/cart/get`,
         { withCredentials: true,
-          credentials: "include"
+          
          }
       );
       console.log("fetch",response.data)
@@ -55,7 +55,6 @@ export const deleteCartItem = createAsyncThunk(
       const response = await axios.delete(
         `${import.meta.env.VITE_API_URL}/api/shop/cart/delete/${productId}`,
         { withCredentials: true,
-          credentials: "include"
          }
       );
       console.log("delete",response.data)
@@ -75,11 +74,11 @@ export const updateCartQuantity = createAsyncThunk(
         `${import.meta.env.VITE_API_URL}/api/shop/cart/update`,
         { productId, quantity },
         { withCredentials: true,
-          credentials: "include"
          }
       );
-      return response.data;
       console.log("updare",response.data)
+      return response.data;
+      
     } catch (error) {
       return rejectWithValue(error.response?.data || "An error occurred");
     }

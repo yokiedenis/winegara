@@ -36,11 +36,12 @@ app.use(
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // Enable in production
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-
+      domain: process.env.NODE_ENV === "production" ? process.env.CLIENT_BASE_URL : undefined 
     },
     },
   )
 );
+
 app.use(
   cors({
     origin: process.env.CLIENT_BASE_URL,
@@ -166,27 +167,32 @@ console.log("Session data:", req.session);
 const fetchCartItems = async (req, res) => {
   try {
     const userId = req.session.userId;
-
+    console.log("useris",userId);
     // Guest: fetch from session and populate product details
     if (!userId) {
       const sessionCart = req.session.cart || [];
-      let populatedItems = [];
-
-      for (const item of sessionCart) {
-        const product = await Product.findById(item.productId).select(
-          "image title price salePrice"
-        );
-        if (product) {
-          populatedItems.push({
-            productId: product._id,
-            image: product.image,
-            title: product.title,
-            price: product.price,
-            salePrice: product.salePrice,
-            quantity: item.quantity,
-          });
-        }
+     
+console.log("Guest cart:", sessionCart);
+  // Use Promise.all to fetch product details concurrently
+  let populatedItems = await Promise.all(
+    sessionCart.map(async (item) => {
+      const product = await Product.findById(item.productId).select(
+        "image title price salePrice"
+      );
+      console.log("prodit", product);
+      if (product) {
+        return {
+          productId: product._id,
+          image: product.image,
+          title: product.title,
+          price: product.price,
+          salePrice: product.salePrice,
+          quantity: item.quantity,
+        };
       }
+      return null; // Return null for invalid products
+    })
+  );
       populatedItems = populatedItems.filter((item) => item !== null);
       // Update session to remove invalid products
       req.session.cart = populatedItems.map((item) => ({
@@ -194,16 +200,15 @@ const fetchCartItems = async (req, res) => {
         quantity: item.quantity,
       }));
       await req.session.save();
-
+      console.log("poop",req.session.cart)
       return res.status(200).json({ success: true, data: populatedItems });
     }
-
     // Logged-in user: fetch from database
     const cart = await Cart.findOne({ userId }).populate({
       path: "items.productId",
       select: "image title price salePrice",
     });
-
+    console.log("cats",cart)
     if (!cart) {
       return res.status(200).json({ success: true, data: [] });
     }
@@ -213,7 +218,7 @@ const fetchCartItems = async (req, res) => {
     cart.items = validItems;
     await cart.save();
 
-    const formattedItems = validItems.map((item) => ({
+    const formattedItems = cart.items.map((item) => ({
       productId: item.productId._id,
       image: item.productId.image,
       title: item.productId.title,
@@ -221,7 +226,7 @@ const fetchCartItems = async (req, res) => {
       salePrice: item.productId.salePrice,
       quantity: item.quantity,
     }));
-
+    console.log("formateed",formattedItems)
     res.status(200).json({ success: true, data: formattedItems });
   } catch (error) {
     console.error(error);

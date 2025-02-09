@@ -11,6 +11,7 @@ import {
   Martini,
   CupSoda,
 } from "lucide-react";
+
 import { Card, CardContent } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -88,8 +89,7 @@ function ShoppingHome() {
             ...productData,
           })
         ).then((data) => {
-          console.log(data?.payload?.success)
-          console.log(addToCart.fulfilled.match(response));
+          console.log("frontendlo",data?.payload?.success)
           if (data?.payload?.success) {
             dispatch(fetchCartItems());
             toast({
@@ -104,10 +104,8 @@ function ShoppingHome() {
             ...productData,
           })
         ).then((data) => {
-           console.log(data?.payload?.success)
-            console.log(addToCart.fulfilled.match(response));
+          console.log("frontendlo",data?.payload?.success)
           if (data?.payload?.success) {
-           
             dispatch(fetchCartItems());
             toast({
               title: "Product is added to cart",
