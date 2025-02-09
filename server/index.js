@@ -3,9 +3,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-const session = require("express-session")
-const mongoDbsession = require("connect-mongodb-session")(session)
-
+const session = require("express-session");
+const mongoDbsession = require("connect-mongodb-session")(session);
 
 //file imports
 const authRouter = require("./routes/auth/auth-routes");
@@ -27,12 +26,11 @@ const store = new mongoDbsession({
   collection: "sessions",
 });
 
-
 //middleware
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.set('trust proxy', true)
+app.set("trust proxy", true);
 
 //for session
 app.use(
@@ -42,24 +40,28 @@ app.use(
     saveUninitialized: false,
     store: store,
     cookie: {
-      maxAge: 1000 * 60 * 60 * 24, 
+      maxAge: 1000 * 60 * 60 * 24,
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // Enable in production
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      domain: process.env.NODE_ENV === "production" ? process.env.CLIENT_BASE_URL : undefined
+      domain:
+        process.env.NODE_ENV === "production"
+          ? process.env.CLIENT_BASE_URL
+          : undefined,
     },
-    },
-  )
+  })
 );
 
-
-//create a database connection 
+//create a database connection
 mongoose
-  .connect(process.env.MONGODB_URI,{ useNewUrlParser: true,useUnifiedTopology: true,
-    useCreateIndex: true,useMongoClient:true })
+  .connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+    useMongoClient: true,
+  })
   .then(() => console.log("MongoDB connected"))
   .catch((error) => console.log(error));
-
 
 app.use(
   cors({
@@ -73,7 +75,7 @@ app.use(
       "Pragma",
     ],
     credentials: true,
-    optionSuccessStatus: 200
+    optionSuccessStatus: 200,
   })
 );
 
@@ -88,9 +90,6 @@ const setGuestId = (req, res, next) => {
   next();
 };
 
-
-
-
 //api
 app.use("/api/auth", authRouter);
 app.use("/api/admin/products", adminProductsRouter);
@@ -103,7 +102,5 @@ app.use("/api/shop/search", shopSearchRouter);
 app.use("/api/common/feature", commonFeatureRouter);
 app.use(setGuestId);
 app.use("/api/shop/cart", shopCartRouter);
-
-
 
 app.listen(PORT, () => console.log(`Server is now running on port ${PORT}`));

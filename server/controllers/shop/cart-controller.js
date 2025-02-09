@@ -2,8 +2,8 @@ require("dotenv").config();
 const Cart = require("../../models/Cart");
 const Product = require("../../models/Product");
 const express = require("express");
-const session = require("express-session")
-const mongoDbsession = require("connect-mongodb-session")(session)
+const session = require("express-session");
+const mongoDbsession = require("connect-mongodb-session")(session);
 const app = express();
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
@@ -11,20 +11,23 @@ const cors = require("cors");
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.set('trust proxy', true)
+app.set("trust proxy", true);
 const store = new mongoDbsession({
   uri: process.env.MONGODB_URI,
   collection: "sessions",
 });
 
-
 mongoose
-  .connect(process.env.MONGODB_URI,{ useNewUrlParser: true,useUnifiedTopology: true,
-    useCreateIndex: true,useMongoClient:true })
+  .connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+    useMongoClient: true,
+  })
   .then(() => console.log("MongoDB connected"))
   .catch((error) => console.log(error));
 
-  //for session
+//for session
 app.use(
   session({
     secret: process.env.SECRET_KEY,
@@ -32,14 +35,16 @@ app.use(
     saveUninitialized: false,
     store: store,
     cookie: {
-      maxAge: 1000 * 60 * 60 * 24, 
+      maxAge: 1000 * 60 * 60 * 24,
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // Enable in production
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      domain: process.env.NODE_ENV === "production" ? process.env.CLIENT_BASE_URL : undefined 
+      domain:
+        process.env.NODE_ENV === "production"
+          ? process.env.CLIENT_BASE_URL
+          : undefined,
     },
-    },
-  )
+  })
 );
 
 app.use(
@@ -54,10 +59,9 @@ app.use(
       "Pragma",
     ],
     credentials: true,
-    optionSuccessStatus: 200
+    optionSuccessStatus: 200,
   })
 );
-
 
 // Add to Cart - Handles both guests and logged-in users
 const addToCart = async (req, res) => {
@@ -105,10 +109,10 @@ const addToCart = async (req, res) => {
           return product ? { ...item, ...product.toObject() } : null;
         })
       );
-      
+
       populatedItems = populatedItems.filter((item) => item !== null);
       console.log("Session ID:", req.sessionID);
-console.log("Session data:", req.session);
+      console.log("Session data:", req.session);
       // console.log("popy", populatedItems);
       return res.status(200).json({ success: true, data: populatedItems });
     }
@@ -167,32 +171,32 @@ console.log("Session data:", req.session);
 const fetchCartItems = async (req, res) => {
   try {
     const userId = req.session.userId;
-    console.log("useris",userId);
+    console.log("useris", userId);
     // Guest: fetch from session and populate product details
     if (!userId) {
       const sessionCart = req.session.cart || [];
-     
-console.log("Guest cart:", sessionCart);
-  // Use Promise.all to fetch product details concurrently
-  let populatedItems = await Promise.all(
-    sessionCart.map(async (item) => {
-      const product = await Product.findById(item.productId).select(
-        "image title price salePrice"
+
+      console.log("Guest cart:", sessionCart);
+      // Use Promise.all to fetch product details concurrently
+      let populatedItems = await Promise.all(
+        sessionCart.map(async (item) => {
+          const product = await Product.findById(item.productId).select(
+            "image title price salePrice"
+          );
+          console.log("prodit", product);
+          if (product) {
+            return {
+              productId: product._id,
+              image: product.image,
+              title: product.title,
+              price: product.price,
+              salePrice: product.salePrice,
+              quantity: item.quantity,
+            };
+          }
+          return null; // Return null for invalid products
+        })
       );
-      console.log("prodit", product);
-      if (product) {
-        return {
-          productId: product._id,
-          image: product.image,
-          title: product.title,
-          price: product.price,
-          salePrice: product.salePrice,
-          quantity: item.quantity,
-        };
-      }
-      return null; // Return null for invalid products
-    })
-  );
       populatedItems = populatedItems.filter((item) => item !== null);
       // Update session to remove invalid products
       req.session.cart = populatedItems.map((item) => ({
@@ -200,7 +204,7 @@ console.log("Guest cart:", sessionCart);
         quantity: item.quantity,
       }));
       await req.session.save();
-      console.log("poop",req.session.cart)
+      console.log("poop", req.session.cart);
       return res.status(200).json({ success: true, data: populatedItems });
     }
     // Logged-in user: fetch from database
@@ -208,7 +212,7 @@ console.log("Guest cart:", sessionCart);
       path: "items.productId",
       select: "image title price salePrice",
     });
-    console.log("cats",cart)
+    console.log("cats", cart);
     if (!cart) {
       return res.status(200).json({ success: true, data: [] });
     }
@@ -226,7 +230,7 @@ console.log("Guest cart:", sessionCart);
       salePrice: item.productId.salePrice,
       quantity: item.quantity,
     }));
-    console.log("formateed",formattedItems)
+    console.log("formateed", formattedItems);
     res.status(200).json({ success: true, data: formattedItems });
   } catch (error) {
     console.error(error);
