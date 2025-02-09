@@ -15,13 +15,10 @@ export const addToCart = createAsyncThunk(
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/shop/cart/add`,
         { productId, quantity },
-        { withCredentials: true,
-         
-        }
+        { withCredentials: true }
       );
-      console.log("add",response.data)
+      console.log("add", response.data);
       return response.data;
-      
     } catch (error) {
       return rejectWithValue(error.response?.data || "An error occurred");
     }
@@ -35,11 +32,9 @@ export const fetchCartItems = createAsyncThunk(
     try {
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/api/shop/cart/get`,
-        { withCredentials: true,
-          
-         }
+        { withCredentials: true }
       );
-      console.log("fetch",response.data)
+      console.log("fetch", response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "An error occurred");
@@ -50,14 +45,13 @@ export const fetchCartItems = createAsyncThunk(
 // Delete Cart Item
 export const deleteCartItem = createAsyncThunk(
   "cart/deleteCartItem",
-  async (productId, { rejectWithValue }) => { 
+  async (productId, { rejectWithValue }) => {
     try {
       const response = await axios.delete(
         `${import.meta.env.VITE_API_URL}/api/shop/cart/delete/${productId}`,
-        { withCredentials: true,
-         }
+        { withCredentials: true }
       );
-      console.log("delete",response.data)
+      console.log("delete", response.data);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "Error deleting item");
@@ -73,12 +67,10 @@ export const updateCartQuantity = createAsyncThunk(
       const response = await axios.put(
         `${import.meta.env.VITE_API_URL}/api/shop/cart/update`,
         { productId, quantity },
-        { withCredentials: true,
-         }
+        { withCredentials: true }
       );
-      console.log("updare",response.data)
+      console.log("updare", response.data);
       return response.data;
-      
     } catch (error) {
       return rejectWithValue(error.response?.data || "An error occurred");
     }
