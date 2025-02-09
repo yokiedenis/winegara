@@ -5,15 +5,15 @@ const User = require("../../models/User");
 const Cart = require("../../models/Cart"); // Add Cart model import
 const mongoose = require("mongoose");
 const express = require("express");
-const session = require("express-session")
-const mongoDbsession = require("connect-mongodb-session")(session)
+const session = require("express-session");
+const mongoDbsession = require("connect-mongodb-session")(session);
 const app = express();
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.set('trust proxy', true)
+app.set("trust proxy", true);
 const store = new mongoDbsession({
   uri: process.env.MONGODB_URI,
   collection: "sessions",
@@ -27,14 +27,16 @@ app.use(
     saveUninitialized: false,
     store: store,
     cookie: {
-      maxAge: 1000 * 60 * 60 * 24, 
+      maxAge: 1000 * 60 * 60 * 24,
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // Enable in production
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      domain: process.env.NODE_ENV === "production" ? process.env.CLIENT_BASE_URL : undefined
+      domain:
+        process.env.NODE_ENV === "production"
+          ? process.env.CLIENT_BASE_URL
+          : undefined,
     },
-    },
-  )
+  })
 );
 
 app.use(
@@ -49,14 +51,13 @@ app.use(
       "Pragma",
     ],
     credentials: true,
-    optionSuccessStatus: 200
+    optionSuccessStatus: 200,
   })
 );
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => console.log("MongoDB connected"))
   .catch((error) => console.log(error));
-
 
 // Register
 const registerUser = async (req, res) => {
@@ -146,13 +147,18 @@ const loginUser = async (req, res) => {
       }
 
       for (const sessionItem of req.session.cart) {
-        const existingItemIndex = userCart.items.findIndex((item) => 
-          item.productId.toString() === sessionItem.productId.toString()
+        const existingItemIndex = userCart.items.findIndex(
+          (item) =>
+            item.productId.toString() === sessionItem.productId.toString()
         );
         console.log("cullan", existingItemIndex);
         if (existingItemIndex !== -1) {
           userCart.items[existingItemIndex].quantity += sessionItem.quantity;
-          console.log("cullan", existingItemIndex.quantity, sessionItem.quantity);
+          console.log(
+            "cullan",
+            existingItemIndex.quantity,
+            sessionItem.quantity
+          );
         } else {
           userCart.items.push({
             productId: sessionItem.productId,
