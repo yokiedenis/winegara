@@ -77,6 +77,9 @@ const addToCart = async (req, res) => {
     const { productId, quantity } = req.body;
     // console.log("prody", productId, quantity);
     const userId = req.session.userId; // Get from session
+    if (!req.session.cart) {
+      req.session.cart = [];
+    }
     // console.log("usaid", userId);
     if (!productId || quantity <= 0) {
       return res
