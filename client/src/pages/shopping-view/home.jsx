@@ -88,20 +88,28 @@ function ShoppingHome() {
           addToCart({
             ...productData,
           })
-        )
-        if (response.payload?.success) {
-          toast({ title: "Product added to cart" });
-        }
+        ).then((data) => {
+          console.log("flo", data?.payload?.success);
+          if (data?.payload?.success) {
+            toast({
+              title: "Product is added to cart",
+            });
+          }
+        });
       } else {
         // For guest users, store cart in session
         const response = dispatch(
           addToCart({
             ...productData,
           })
-        )
-        if (response.payload?.success) {
-          toast({ title: "Product added to cart" });
-        }
+        ).then((data) => {
+          console.log("gudlo", data?.payload?.success);
+          if (data?.payload?.success) {
+            toast({
+              title: "Product is added to cart",
+            });
+          }
+        });
       }
     } catch (error) {
       console.error("Error adding product to cart:", error);
