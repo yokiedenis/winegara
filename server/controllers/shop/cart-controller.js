@@ -97,8 +97,9 @@ const addToCart = async (req, res) => {
     if (!userId) {
       req.session.cart = req.session.cart || [];
       const existingItem = req.session.cart.find(
-        (item) => item.productId.toString() === productId
+        (item) => item.productId.toString() === productId.toString()
       );
+console.log("exist",existingItem);
 
       if (existingItem) {
         existingItem.quantity += quantity;
