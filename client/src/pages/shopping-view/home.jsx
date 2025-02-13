@@ -88,30 +88,20 @@ function ShoppingHome() {
           addToCart({
             ...productData,
           })
-        ).then((data) => {
-          console.log("frontendlo", data?.payload?.success);
-          if (data?.payload?.success) {
-            dispatch(fetchCartItems());
-            toast({
-              title: "Product is added to cart",
-            });
-          }
-        });
+        )
+        if (response.payload?.success) {
+          toast({ title: "Product added to cart" });
+        }
       } else {
         // For guest users, store cart in session
         const response = dispatch(
           addToCart({
             ...productData,
           })
-        ).then((data) => {
-          console.log("frontendlo", data?.payload?.success);
-          if (data?.payload?.success) {
-            dispatch(fetchCartItems());
-            toast({
-              title: "Product is added to cart",
-            });
-          }
-        });
+        )
+        if (response.payload?.success) {
+          toast({ title: "Product added to cart" });
+        }
       }
     } catch (error) {
       console.error("Error adding product to cart:", error);
