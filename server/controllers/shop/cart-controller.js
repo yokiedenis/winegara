@@ -14,15 +14,14 @@ app.use(express.urlencoded({ extended: true }));
 app.set("trust proxy", true);
 const store = new mongoDbsession({
   uri: process.env.MONGODB_URI,
-  collection: "sessions",
+  collection: "vercel_sessions",
+  expires: 1000 * 60 * 60 * 24 * 2,
 });
 
 mongoose
   .connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    useCreateIndex: true,
-    useMongoClient: true,
   })
   .then(() => console.log("MongoDB connected"))
   .catch((error) => console.log(error));
@@ -34,6 +33,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store: store,
+    proxy: true,
     cookie: {
       maxAge: 1000 * 60 * 60 * 24,
       httpOnly: true,
@@ -62,15 +62,15 @@ app.use(
     optionSuccessStatus: 200,
   })
 );
-// app.use((req, res, next) => {
-//   if (process.env.NODE_ENV === "production") {
-//     res.setHeader(
-//       "Set-Cookie",
-//       `session=${req.sessionID}; HttpOnly; Secure; SameSite=None; Path=/`
-//     );
-//   }
-//   next();
-// });
+app.use((req, res, next) => {
+  if (process.env.NODE_ENV === "production") {
+    res.setHeader(
+      "Set-Cookie",
+      `session=${req.sessionID}; HttpOnly; Secure; SameSite=None; Path=/`
+    );
+  }
+  next();
+});
 // Add to Cart - Handles both guests and logged-in users
 const addToCart = async (req, res) => {
   try {

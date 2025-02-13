@@ -23,7 +23,8 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const store = new mongoDbsession({
   uri: process.env.MONGODB_URI,
-  collection: "sessions",
+  collection: "vercel_sessions",
+  expires: 1000 * 60 * 60 * 24 * 2,
 });
 
 //middleware
@@ -39,6 +40,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store: store,
+    proxy: true,
     cookie: {
       maxAge: 1000 * 60 * 60 * 24,
       httpOnly: true,
@@ -51,33 +53,30 @@ app.use(
     },
   })
 );
-
 //create a database connection
 mongoose
   .connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    useCreateIndex: true,
-    useMongoClient: true,
   })
   .then(() => console.log("MongoDB connected"))
   .catch((error) => console.log(error));
 
-app.use(
-  cors({
-    origin: process.env.CLIENT_BASE_URL,
-    methods: ["GET", "POST", "DELETE", "PUT"],
-    allowedHeaders: [
-      "Content-Type",
-      "Authorization",
-      "Cache-Control",
-      "Expires",
-      "Pragma",
-    ],
-    credentials: true,
-    optionSuccessStatus: 200,
-  })
-);
+  app.use(
+    cors({
+      origin: process.env.CLIENT_BASE_URL,
+      methods: ["GET", "POST", "DELETE", "PUT"],
+      allowedHeaders: [
+        "Content-Type",
+        "Authorization",
+        "Cache-Control",
+        "Expires",
+        "Pragma",
+      ],
+      credentials: true,
+      optionSuccessStatus: 200,
+    })
+  );
 // app.use((req, res, next) => {
 //   if (process.env.NODE_ENV === "production") {
 //     res.setHeader(

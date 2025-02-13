@@ -15,8 +15,17 @@ app.use(express.urlencoded({ extended: true }));
 app.set("trust proxy", true);
 const store = new mongoDbsession({
   uri: process.env.MONGODB_URI,
-  collection: "sessions",
+  collection: "vercel_sessions",
+  expires: 1000 * 60 * 60 * 24 * 2,
 });
+
+mongoose
+  .connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("MongoDB connected"))
+  .catch((error) => console.log(error));
 
 //for session
 app.use(
@@ -25,6 +34,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store: store,
+    proxy: true,
     cookie: {
       maxAge: 1000 * 60 * 60 * 24,
       httpOnly: true,
@@ -53,12 +63,15 @@ app.use(
     optionSuccessStatus: 200,
   })
 );
-mongoose
-  .connect(process.env.MONGODB_URI)
-  .then(() => console.log("MongoDB connected"))
-  .catch((error) => console.log(error));
-
-
+app.use((req, res, next) => {
+  if (process.env.NODE_ENV === "production") {
+    res.setHeader(
+      "Set-Cookie",
+      `session=${req.sessionID}; HttpOnly; Secure; SameSite=None; Path=/`
+    );
+  }
+  next();
+});
 // Register
 const registerUser = async (req, res) => {
   const { userName, email, password } = req.body;
