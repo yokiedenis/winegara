@@ -9,17 +9,13 @@
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "api/$1",
+      "dest": "server.js",
       "headers": {
         "Access-Control-Allow-Origin": "https://winegarage1.vercel.app/",
         "Access-Control-Allow-Credentials": "true"
       }
     }
-  ],
-  "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "/index.html"
-    }
   ]
+ 
+  
 }
