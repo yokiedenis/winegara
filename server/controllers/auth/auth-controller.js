@@ -1,6 +1,5 @@
 require("dotenv").config();
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 const User = require("../../models/User");
 const Cart = require("../../models/Cart"); // Add Cart model import
 const mongoose = require("mongoose");
@@ -59,15 +58,7 @@ mongoose
   .then(() => console.log("MongoDB connected"))
   .catch((error) => console.log(error));
 
-  // app.use((req, res, next) => {
-  //   if (process.env.NODE_ENV === "production") {
-  //     res.setHeader(
-  //       "Set-Cookie",
-  //       `session=${req.sessionID}; HttpOnly; Secure; SameSite=None; Path=/`
-  //     );
-  //   }
-  //   next();
-  // });
+
 // Register
 const registerUser = async (req, res) => {
   const { userName, email, password } = req.body;
@@ -147,7 +138,7 @@ const loginUser = async (req, res) => {
     // Set user session
     req.session.userId = user._id;
 
-    // Merge guest cart with user cart
+    // // Merge guest cart with user cart
     if (req.session.cart && req.session.cart.length > 0) {
       let userCart = await Cart.findOne({ userId: user._id });
 
@@ -178,32 +169,29 @@ const loginUser = async (req, res) => {
 
       await userCart.save();
       req.session.cart = []; // Clear guest cart
-      await req.session.save();
+    
     }
 
-    // Create JWT token (if needed for other services)
-    const token = jwt.sign(
-      {
-        id: user._id,
-        role: user.role,
-        email: user.email,
-        userName: user.userName,
-      },
-      process.env.SECRET_KEY,
-      { expiresIn: "1h" }
-    );
 
-    res.status(200).json({
-      success: true,
-      message: "Logged in successfully",
-      token,
-      user: {
-        email: user.email,
-        role: user.role,
-        id: user._id,
-        userName: user.userName,
-      },
-    });
+     //session based auth
+    req.session.isAuth=true;
+    req.session.user={
+        userId:user.id,
+        email:user.email,
+        username:user.userName,
+    };
+    await req.session.save();
+   // loginUser function
+res.status(200).json({
+  success: true,
+  message: "Logged in successfully",
+  user: {
+    id: user._id,
+    email: user.email,
+    userName: user.userName,
+    role: user.role
+  }
+});
   } catch (e) {
     console.error(e);
     res.status(500).json({
@@ -222,33 +210,20 @@ const logoutUser = (req, res) => {
         message: "Logout failed",
       });
     }
-    //   res.clearCookie("connect.sid"); // Clear session cookie
-    res.status(200).json({
+    res.clearCookie("connect.sid"); // Replace "connect.sid" with your session cookie name
+
+    return res.status(200).json({
       success: true,
-      message: "Logged out successfully!",
+      message: "Logged out successfully",
     });
   });
-};
+}
 
 // Auth Middleware (Session-based)
 const authMiddleware = async (req, res, next) => {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
-  if (!token)
-    return res.status(401).json({
-      success: false,
-      message: "Unauthorised user!",
-    });
-
-  try {
-    const decoded = jwt.verify(token, process.env.SECRET_KEY);
-    req.user = decoded;
-    next();
-  } catch (error) {
-    res.status(401).json({
-      success: false,
-      message: "Unauthorised user!",
-    });
+  // Check if session is authenticated
+  if (!req.session.isAuth) {
+    return res.status(401).json("Session expired, please login again");
   }
 };
 

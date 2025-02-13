@@ -18,7 +18,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "../ui/avatar";
-import { logoutUser, resetTokenAndCredentials } from "@/store/auth-slice";
+import { logoutUser} from "@/store/auth-slice";
 import UserCartWrapper from "./cart-wrapper";
 import { useEffect, useState } from "react";
 import { fetchCartItems } from "@/store/shop/cart-slice";
@@ -75,8 +75,6 @@ function HeaderRightContent({ closeSheet }) {
 
   function handleLogout() {
     dispatch(logoutUser());
-    dispatch(resetTokenAndCredentials());
-    sessionStorage.clear();
     navigate("/auth/login");
   }
 

@@ -16,8 +16,12 @@ export default defineConfig({
       '/api': {
         target: process.env.VITE_API_URL, // Backend server URL
         changeOrigin: true,
-        secure: false,
+        secure: true,
       },
     },
-  }
+  },
+  '/ws': {
+    target: process.env.VITE_API_URL,
+    ws: true,
+  },
 });
